@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Rights Advisor - HCI Legal Access Platform</title>
+    <link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/paddleocr@1.0.7/dist/paddle-ocr.min.js"></script> -->
+
+
+
+
+</head>
+<body>
+    <div class="background-elements">
+        <img src="new_consume.jpg" alt="" class="consumer">
+    </div>
+    
+    <!-- Navbar with hotline and language selector -->
+    <div class="navbar">
+        <div class="hotline-container" id="hotlineContainer">
+            <div class="hotline-badge">
+                <span>📞</span>
+                <span id="consumerHotline">Consumer Right Hotline: 16121</span>
+            </div>
+            <div class="hotline-badge">
+                <span>🚨</span>
+                <span id="policeHotline">Emergency Police: 999</span>
+            </div>
+        </div>
+        
+        <div class="language-selector">
+            <div class="language-label" id="languageLabel">Select Language / ভাষা চয়ন করুন</div>
+            <div class="language-options">
+                <div class="language-option selected" onclick="selectLanguage('english')">
+                    English
+                </div>
+                <div class="language-option" onclick="selectLanguage('bangla')">
+                    বাংলা
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 id="headerTitle">Legal Rights Advisor</h1>
+            <p id="headerSubtitle">Consumer & Business Owner Rights and Legal Access Platform</p>
+        </div>
+        <div class="content">
+            <div class="start-screen">
+                <h2 id="startTitle">Advanced Legal Consultation System</h2>
+                <p id="startDescription">Experience our cutting-edge HCI-based approach to understanding consumer and business owner rights. Our intelligent system will guide you through a comprehensive assessment to identify applicable laws for your specific situation.</p>
+                
+<div class="start-buttons">
+    <button class="btn" onclick="startQuestions()">
+        <span>📋</span> <span id="questionnaireBtn">Detailed Questionnaire</span>
+    </button>
+    <button class="btn primary-btn" onclick="showProblemDescription()">
+        <span>✍️</span> <span id="describeProblemBtn">Describe Problem</span>
+    </button>
+
+    <button class="btn primary-btn" onclick="openDocGenerator()">
+    <span>📄</span> <span id="documentGenerator">Document Generator</span>
+</button>
+
+<button class="btn primary-btn" onclick="showComingSoon()">
+    <span>📷</span> <span>Product Scanner (OCR)</span>
+</button>
+
+
+
+
+
+    <button class="btn primary-btn" onclick="showComingSoon()">
+        <span>🤖</span> <span>Try AI Chatbot</span>
+    </button>
+</div>
+            </div>
+
+            <div id="comingSoonModal" class="modal-overlay">
+    <div class="modal-box">
+        <h2>Coming Soon 🚀</h2>
+        <button class="close-modal" onclick="closeComingSoon()">Close</button>
+    </div>
+</div>
+
+<!-- OCR Scanner Modal -->
+<!-- <div id="ocrScannerModal" class="modal-overlay">
+    <div class="modal-box ocr-box">
+        <h2>📷 Product Scanner (OCR)</h2>
+        <p>Scan a product label or upload a photo. App will detect text and match relevant laws automatically.</p>
+
+        <input id="ocrInput" type="file" accept="image/*" onchange="processOCR()" />
+
+        <div class="ocr-preview" id="ocrPreview"></div>
+        <pre class="ocr-text" id="ocrText"></pre>
+
+        <button class="btn primary-btn" onclick="matchLawsFromOCR()">Show Related Laws</button>
+        <button class="close-modal" onclick="closeOCRScanner()">Close</button>
+    </div>
+</div> -->
+            <!-- Add this after the start-screen div -->
+<div class="problem-description-container">
+    <h2 id="problemTitle">Describe Your Problem</h2>
+    <p id="problemDescription">Tell us about your consumer or business issue in your own words. Our AI will analyze your description and suggest applicable laws.</p>
+    
+    <div class="text-input-container">
+        <textarea 
+            id="problemText" 
+            placeholder="Describe your problem here... Example: I bought a product without expiration date and the seller refused to refund..."
+            rows="6"
+        ></textarea>
+        <div class="char-count" id="charCount">0/1000 characters</div>
+    </div>
+    
+<div class="text-analysis-options">
+    <button class="btn" id="analyzeBtn" onclick="analyzeProblem()">
+        <span>🔍</span> Analyze Problem
+    </button>
+    <button class="btn primary-btn" onclick="switchToQuestions()">
+        <span>📝</span> Use Questionnaire Instead
+    </button>
+</div>
+</div>
+
+            <div class="question-container">
+                <div class="phase-indicator" id="phaseIndicator">Assessment Phase</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Question 1 of 15</div>
+                </div>
+                <div class="question-number" id="questionNumber">Question 1</div>
+                <div class="question" id="questionText"></div>
+                <div class="options" id="options"></div>
+                
+                <div style="margin-top: 40px;">
+                    <button class="btn back-btn" id="backBtn" onclick="previousQuestion()" style="display: none;">Previous</button>
+                    <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Question</button>
+                </div>
+            </div>
+            <div class="loading">
+                <div class="spinner"></div>
+                <h3 id="loadingTitle">Analyzing Your Legal Situation</h3>
+                <p id="loadingDesc">Our advanced system is matching your responses with applicable laws...</p>
+            </div>
+            <div class="result-container">
+                <h2 class="result-title" id="resultTitle">Final Legal Assessment</h2>
+                <div class="laws-grid" id="lawResult"></div>
+
+                <!-- <div class="export-buttons">
+    <button class="btn" onclick="exportToPDF()">📄 Export as PDF</button>
+    <button class="btn" onclick="exportToExcel()">📊 Export as Excel</button>
+</div> -->
+
+<button class="btn" onclick="exportPDF()">Export as PDF</button>
+<button class="btn" onclick="exportExcel()">Export as Excel</button>
+
+                <button class="btn" id="restartBtn" onclick="restart()">Start New Assessment</button>
+
+                
+            </div>
+        </div>
+    </div>
+    
+
+<script src="script.js"></script>
+</body>
+</html>
